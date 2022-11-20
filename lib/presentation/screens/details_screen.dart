@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qtec_solution/constants.dart';
@@ -34,13 +36,37 @@ class _DetailsScreenState extends State<DetailsScreen> {
         ),
       ),
       body: Padding(
-        padding:
-            const EdgeInsets.only(top: 10, left: 12, right: 12, bottom: 12),
+        padding: const EdgeInsets.only(top: 10, left: 12, right: 12, bottom: 0),
         child: ListView(
           physics: const BouncingScrollPhysics(),
           children: [
             searchField(),
-            const Padding(padding: EdgeInsets.symmetric(vertical: 20)),
+            Padding(
+              padding: const EdgeInsets.only(top: 20, bottom: 15),
+              child: CarouselSlider(
+                items: widget.product.images
+                    .map(
+                      (e) => Container(
+                        padding: EdgeInsets.all(7),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          image: DecorationImage(
+                              image: CachedNetworkImageProvider(
+                                e.image,
+                              ),
+                              fit: BoxFit.fill),
+                        ),
+                      ),
+                    )
+                    .toList(),
+                options: CarouselOptions(
+                    height: 260,
+                    aspectRatio: 9 / 16,
+                    enlargeCenterPage: true,
+                    enableInfiniteScroll: true,
+                    viewportFraction: .7),
+              ),
+            ),
             Text(
               widget.product.productName,
               style: const TextStyle(
@@ -107,7 +133,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                             color: kHighlighTextColor),
                       ),
                       Text(
-                        '৳ ${widget.product.charge.sellingPrice}',
+                        '৳ ${widget.product.charge.currentCharge}',
                         style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
@@ -138,7 +164,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   const SizedBox(height: 10),
                   Row(
                     children: List.generate(
-                        400 ~/ 10,
+                        500 ~/ 10,
                         (index) => Expanded(
                               child: Container(
                                 color: index % 2 == 0
